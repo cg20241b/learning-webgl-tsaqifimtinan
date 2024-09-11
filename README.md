@@ -519,16 +519,25 @@
                 // T
                 -0.9,  0.9,  -0.5,  0.9,
                 -0.7,  0.9,  -0.7,  0.5,
+                -0.75, 0.9,  -0.65, 0.9,  // Extra horizontal line for thickness
+                -0.7,  0.9,  -0.7,  0.7,  // Extra vertical line for thickness
+            
                 // S
                 -0.4,  0.9,  -0.2,  0.9,
                 -0.4,  0.9,  -0.4,  0.7,
                 -0.4,  0.7,  -0.2,  0.7,
                 -0.2,  0.7,  -0.2,  0.5,
                 -0.2,  0.5,  -0.4,  0.5,
+                -0.4,  0.5,  -0.4,  0.3,  // Extra vertical line for thickness
+                -0.4,  0.3,  -0.2,  0.3,  // Extra horizontal line for thickness
+            
                 // A
                 0.1,  0.5,   0.3,  0.9,
                 0.3,  0.9,   0.5,  0.5,
                 0.2,  0.7,   0.4,  0.7,
+                0.1,  0.5,   0.2,  0.5,  // Extra horizontal line for thickness
+                0.4,  0.5,   0.5,  0.5,  // Extra horizontal line for thickness
+                0.3,  0.9,   0.3,  0.7,  // Extra vertical line for thickness
             ];
 
             // Now pass the list of positions into WebGL to build the
@@ -613,7 +622,7 @@
             // Draw the lines
             {
                 const offset = 0;
-                const vertexCount = 18; // 9 lines, 2 vertices each
+                const vertexCount = 27; // 9 lines, 3 vertices each
                 gl.drawArrays(gl.LINES, offset, vertexCount);
             }
         }

@@ -16,8 +16,8 @@
             align-items: center;
         }
         canvas {
-            width: 80%;
-            height: 80%;
+            width: 85%;
+            height: 85%;
             background-color: #000; /* Initial background color */
         }
     </style>
@@ -119,12 +119,16 @@
                 // T
                 -0.9,  0.9,  -0.5,  0.9,
                 -0.7,  0.9,  -0.7,  0.5,
+                -0.75, 0.9,  -0.65, 0.9,
+                -0.7,  0.9,  -0.7,  0.7,
+            
                 // S
                 -0.4,  0.9,  -0.2,  0.9,
                 -0.4,  0.9,  -0.4,  0.7,
                 -0.4,  0.7,  -0.2,  0.7,
                 -0.2,  0.7,  -0.2,  0.5,
                 -0.2,  0.5,  -0.4,  0.5,
+            
                 // A
                 0.1,  0.5,   0.3,  0.9,
                 0.3,  0.9,   0.5,  0.5,
@@ -142,28 +146,40 @@
         }
 
         function initTriangleBuffers(gl) {
-            // Create a buffer for the triangle's positions.
+            // Create a buffer for the rectangle's positions.
             const positionBuffer = gl.createBuffer();
 
             // Select the positionBuffer as the one to apply buffer
             // operations to from here out.
             gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
-            // Now create an array of positions for the triangles.
+            // Now create an array of positions for the rectangles.
             const positions = [
                 // T
-                -0.9,  0.9,  -0.7,  0.9,  -0.8,  0.7,
-                -0.8,  0.7,  -0.9,  0.5,  -0.8,  0.5,
-                -0.8,  0.7,  -0.7,  0.9,  -0.8,  0.5,
+                -0.9,  0.9,  -0.5,  0.9,  -0.9,  0.8,  // Top horizontal bar
+                -0.9,  0.8,  -0.5,  0.9,  -0.5,  0.8,
+                -0.65,  0.85,  -0.75,  0.4,  -0.65,  0.4,  // Vertical bar (moved downwards and extended)
+                -0.65,  0.85,  -0.75,  0.85,  -0.75,  0.4,  // Vertical bar (moved downwards and extended)
+
                 // S
-                -0.6,  0.9,  -0.4,  0.9,  -0.6,  0.7,
-                -0.6,  0.7,  -0.4,  0.9,  -0.4,  0.7,
-                -0.6,  0.7,  -0.4,  0.7,  -0.6,  0.5,
-                -0.6,  0.5,  -0.4,  0.7,  -0.4,  0.5,
+                -0.4,  0.9,  -0.2,  0.9,  -0.4,  0.8,  // Top horizontal bar
+                -0.4,  0.8,  -0.2,  0.9,  -0.2,  0.8,
+                -0.4,  0.7,  -0.2,  0.7,  -0.4,  0.6,  // Middle horizontal bar
+                -0.4,  0.6,  -0.2,  0.7,  -0.2,  0.6,
+                -0.4,  0.5,  -0.2,  0.5,  -0.4,  0.4,  // Bottom horizontal bar
+                -0.4,  0.4,  -0.2,  0.5,  -0.2,  0.4,
+                -0.4,  0.8,  -0.35,  0.8,  -0.4,  0.7, // Vertical bar connecting top to middle
+                -0.4,  0.7,  -0.35,  0.8,  -0.35,  0.7,
+                -0.25,  0.6,  -0.2,  0.6,  -0.25,  0.5,  // First triangle of the vertical bar (moved to the right by 0.05)
+                -0.25,  0.5,  -0.2,  0.6,  -0.2,  0.5,  // Second triangle of the vertical bar (moved to the right by 0.05)
+
                 // A
-                -0.2,  0.5,  -0.1,  0.9,  0.0,  0.5,
-                -0.2,  0.5,  -0.1,  0.7,  0.0,  0.5,
-                -0.15, 0.7,  -0.05, 0.7,  -0.1,  0.9,
+                0.2,  0.5,   0.25,  0.9,   0.25,  0.5,  // Left diagonal (slimmer)
+                0.25,  0.9,   0.3,  0.9,   0.25,  0.5,
+                0.3,  0.9,   0.35,  0.9,   0.35,  0.5,  // Right diagonal (slimmer)
+                0.35,  0.9,   0.4,  0.5,   0.35,  0.5,
+                0.2,  0.7,   0.4,  0.7,   0.2,  0.6,  // Middle horizontal bar
+                0.2,  0.6,   0.4,  0.7,   0.4,  0.6,
             ];
 
             // Now pass the list of positions into WebGL to build the
@@ -213,7 +229,7 @@
             // Draw the lines
             {
                 const offset = 0;
-                const vertexCount = 18; // 9 lines, 2 vertices each
+                const vertexCount = 36; // 18 lines, 2 vertices each
                 gl.drawArrays(gl.LINES, offset, vertexCount);
             }
         }
@@ -235,7 +251,7 @@
                 const type = gl.FLOAT;    // the data in the buffer is 32bit floats
                 const normalize = false;  // don't normalize
                 const stride = 0;         // how many bytes to get from one set of values to the next
-                                            // 0 = use type and numComponents above
+                                        // 0 = use type and numComponents above
                 const offset = 0;         // how many bytes inside the buffer to start from
                 gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
                 gl.vertexAttribPointer(
@@ -255,7 +271,7 @@
             // Draw the triangles
             {
                 const offset = 0;
-                const vertexCount = 27; // 9 triangles, 3 vertices each
+                const vertexCount = 72; // 24 triangles, 3 vertices each
                 gl.drawArrays(gl.TRIANGLES, offset, vertexCount);
             }
         }
