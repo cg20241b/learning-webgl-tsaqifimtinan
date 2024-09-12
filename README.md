@@ -713,3 +713,92 @@
 </body>
 </html>
 ```
+
+4. Why is the 2nd scene using gl.TRIANGLES doesnt show the whole triangles? Even though inside the array its already inputted
+
+```html
+function initTriangleBuffers(gl) {
+    // Create a buffer for the rectangle's positions.
+    const positionBuffer = gl.createBuffer();
+
+    // Select the positionBuffer as the one to apply buffer
+    // operations to from here out.
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+    // Now create an array of positions for the rectangles.
+    const positions = [
+        // T
+        -0.9,  0.9,  -0.5,  0.9,  -0.9,  0.8,  // Top horizontal bar
+        -0.9,  0.8,  -0.5,  0.9,  -0.5,  0.8,
+        -0.65,  0.9,  -0.75,  0.5,  -0.65,  0.5,  // Vertical bar
+        -0.65,  0.9,  -0.75,  0.9,  -0.75,  0.5,
+
+        // S
+        -0.4,  0.9,  -0.2,  0.9,  -0.4,  0.8,  // Top horizontal bar
+        -0.4,  0.8,  -0.2,  0.9,  -0.2,  0.8,
+        -0.4,  0.7,  -0.2,  0.7,  -0.4,  0.6,  // Middle horizontal bar
+        -0.4,  0.6,  -0.2,  0.7,  -0.2,  0.6,
+        -0.4,  0.5,  -0.2,  0.5,  -0.4,  0.4,  // Bottom horizontal bar
+        -0.4,  0.4,  -0.2,  0.5,  -0.2,  0.4,
+
+        // A
+        0.1,  0.5,   0.3,  0.9,   0.5,  0.5,  // Left diagonal
+        0.1,  0.5,   0.3,  0.9,   0.3,  0.5,
+        0.3,  0.9,   0.5,  0.5,   0.3,  0.5,  // Right diagonal
+        0.3,  0.5,   0.5,  0.5,   0.5,  0.5,
+        0.2,  0.7,   0.4,  0.7,   0.2,  0.6,  // Middle horizontal bar
+        0.2,  0.6,   0.4,  0.7,   0.4,  0.6,
+    ];
+
+    // Now pass the list of positions into WebGL to build the
+    // shape. We do this by creating a Float32Array from the
+    // JavaScript array, then use it to fill the current buffer.
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+    return {
+        position: positionBuffer,
+    };
+}
+
+function drawTriangles(gl, programInfo, buffers) {
+    // Clear the canvas before we start drawing on it.
+    gl.clearColor(1.0, 0.0, 1.0, 1.0);  // Clear to fuchsia, fully opaque
+    gl.clearDepth(1.0);                 // Clear everything
+    gl.enable(gl.DEPTH_TEST);           // Enable depth testing
+    gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
+
+    // Clear the canvas before we start drawing on it.
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    // Tell WebGL how to pull out the positions from the position
+    // buffer into the vertexPosition attribute.
+    {
+        const numComponents = 2;  // pull out 2 values per iteration
+        const type = gl.FLOAT;    // the data in the buffer is 32bit floats
+        const normalize = false;  // don't normalize
+        const stride = 0;         // how many bytes to get from one set of values to the next
+                                  // 0 = use type and numComponents above
+        const offset = 0;         // how many bytes inside the buffer to start from
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+        gl.vertexAttribPointer(
+            programInfo.attribLocations.vertexPosition,
+            numComponents,
+            type,
+            normalize,
+            stride,
+            offset);
+        gl.enableVertexAttribArray(
+            programInfo.attribLocations.vertexPosition);
+    }
+
+    // Tell WebGL to use our program when drawing
+    gl.useProgram(programInfo.program);
+
+    // Draw the triangles
+    {
+        const offset = 0;
+        const vertexCount = 48; // 16 triangles, 3 vertices each
+        gl.drawArrays(gl.TRIANGLES, offset, vertexCount);
+    }
+}
+```
